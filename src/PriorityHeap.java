@@ -1,5 +1,3 @@
-import java.util.LinkedList;
-
 /**
  * 
  * This class is an implementation of a priority-queue based upon max-heaps.
