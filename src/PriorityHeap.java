@@ -1,6 +1,6 @@
 /**
  * 
- * This class is an implementation of a priority-queue based upon max-heaps.
+ * This class is an implementation of a priority-queue based upon the max-heap structure.
  * 
  * @author Austin Sorrells, Jared Watkins
  * 
@@ -8,9 +8,9 @@
 public class PriorityHeap {
 
 	private Proc[] currentHeap; // heap structure
-	private Proc[] procList; //list of proc objects sorted by ID
-	private int heapsize; // max array size
-	private int currentSize; // How many elem in array
+	private Proc[] procList; // list of Proc objects sorted by ID
+	private int heapsize; // maximum array size
+	private int currentSize; // number of elements currently in heap
 
 	public static void main(String[] args) {
 		Proc[] procs = { new Proc(1, 23), new Proc(20, 15) };
@@ -41,11 +41,12 @@ public class PriorityHeap {
 		currentSize = 0;
 		currentHeap = new Proc[heapsize];
 		procList = new Proc[heapsize];
-		for(int i=0; i<heapsize; i++)
+		for(int i=0; i<heapsize; i++) //Initialize the list of Proc objects to NULL
 			procList[i]=null;
 	}
 
 	/**
+	 * Creates a new priority queue with given size and objects.
 	 * 
 	 * @param ls
 	 *            the array of Procs to initially include in the heap
@@ -59,6 +60,7 @@ public class PriorityHeap {
 					.println("Maximum size cannot be less than the size of the array provided!");
 			return;
 		}
+		
 		heapsize = maxSize;
 		currentSize = ls.length;
 		currentHeap = new Proc[heapsize];
@@ -84,7 +86,7 @@ public class PriorityHeap {
 	}
 
 	/**
-	 * The max-heapify function. Maintains the heap property.
+	 * The "max-heapify" function. Maintains the heap property.
 	 * 
 	 * @param parent
 	 *            index of the position to begin heapifying
@@ -123,18 +125,21 @@ public class PriorityHeap {
 	 *            index of the second element to be swapped
 	 */
 	private void swap(int firstIndex, int otherIndex) {
-		// Swaps two indices
+		// Check the validity of the given indices
 		if(0 > firstIndex || 0 > otherIndex || firstIndex >= currentSize || otherIndex >= currentSize) { return; }
 		
 		Proc temp = currentHeap[firstIndex];
-		temp.setHeapIndex(otherIndex);//Update the position of the process in the heap
+		temp.setHeapIndex(otherIndex);// Update the position of the process in the heap
+		
 		currentHeap[firstIndex] = currentHeap[otherIndex];
-		currentHeap[firstIndex].setHeapIndex(firstIndex);//Update the position of the other process
+		currentHeap[firstIndex].setHeapIndex(firstIndex);// Update the position of the other process
+		
 		currentHeap[otherIndex] = temp;
 	}
 	
 	
 	/**
+	 * Return the number of elements currently held within the heap
 	 * 
 	 * @return Current number of elements in the heap
 	 */
@@ -143,6 +148,7 @@ public class PriorityHeap {
 	}
 
 	/**
+	 * Determines if a Proc at the given location in the heap is a leaf node.
 	 * 
 	 * @param index
 	 *            index of element in the heap to be checked
@@ -153,9 +159,9 @@ public class PriorityHeap {
 			return false; // Has at least a left child, so cannot be a leaf node
 		return true; // Has no children, so is a leaf node
 	}
-	//We could just use index to make the check rather than calling a new function
 
 	/**
+	 * Mathematically determines the index of the left child of the Proc at index 'parent'
 	 * 
 	 * @param parent
 	 *            index of the parent node in the heap
@@ -166,6 +172,7 @@ public class PriorityHeap {
 	}
 
 	/**
+	 * Mathematically determines the index of the right child of the Proc at index 'parent'
 	 * 
 	 * @param parent
 	 *            index of the parent node in the heap
@@ -176,6 +183,7 @@ public class PriorityHeap {
 	}
 
 	/**
+	 * Mathematically determines the index of the parent of the Proc at index 'child'
 	 * 
 	 * @param child
 	 *            position of the node to find the parent of
@@ -190,17 +198,21 @@ public class PriorityHeap {
 	 * @param newProc
 	 */
 	public void insert(Proc newProc) {
-		if(newProc.getProcID() > heapsize)
+		if(newProc.getProcID() >= heapsize) { return ; } // Valid IDs are from 0 to heapsize - 1
+		
 		if(procList[newProc.getProcID()] != null) {
 			System.err.println("A process with that ID has already been created.");
 		}
-		procList[newProc.getProcID()] = newProc;
+		
+		procList[newProc.getProcID()] = newProc; // Add the Proc to the ordered list in sorted location
+		
 		// To insert, essentially sift the element up based on its priority
 		currentHeap[currentSize++] = newProc;
 		increaseKey(currentSize - 1, newProc.getPriority());
 	}
 
 	/**
+	 * Extract the root node of the heap, and restructure to maintain the heap property
 	 * 
 	 * @return element at the top of the heap
 	 */
@@ -224,6 +236,7 @@ public class PriorityHeap {
 	}
 
 	/**
+	 * Extract the Proc at the given index within the heap, and restructure to maintain heap property
 	 * 
 	 * @param index
 	 *            position of the node to be removed
@@ -239,11 +252,12 @@ public class PriorityHeap {
 		// Put the last element into the desired position and put the original
 		// object in a temporary variable
 		Proc temp = currentHeap[index];
-		temp.setHeapIndex(currentSize-1);//0-based
+		temp.setHeapIndex(currentSize-1);
 		currentHeap[index] = currentHeap[--currentSize];
 		currentHeap[index].setHeapIndex(index);
 
-		procList[temp.getProcID()] = null;//remove the Proc from the ordered list
+		//  Remove the Proc from the ordered list
+		procList[temp.getProcID()] = null;
 		
 		// Max-heapify, starting with the removal index
 		siftdown(index);
@@ -253,7 +267,7 @@ public class PriorityHeap {
 	}
 
 	/**
-	 * Builds a max heap
+	 * Constructs a max-heap structure from the internal list of Proc objects
 	 */
 	public void buildheap() {
 		for (int i = (int) Math.floor(currentSize / 2) - 1; i >= 0; i--) {
@@ -262,6 +276,7 @@ public class PriorityHeap {
 	}
 
 	/**
+	 * Adds a new Proc object with the given id and priority to the max heap
 	 * 
 	 * @param value
 	 *            value of the element being enqueued
@@ -281,6 +296,7 @@ public class PriorityHeap {
 	}
 
 	/**
+	 * Extracts and returns the maximum priority Proc object from the heap
 	 * 
 	 * @return the object id of the element with highest priority
 	 */
@@ -289,6 +305,8 @@ public class PriorityHeap {
 	}
 
 	/**
+	 * Modifies the priority of the existing Proc object at location 'index'
+	 * within the current max heap structure
 	 * 
 	 * @param index
 	 *            index of the element to have its priority changed
@@ -305,6 +323,15 @@ public class PriorityHeap {
 		} else { ; }
 	}
 
+	/**
+	 * Increases the priority of the existing Proc object at location 'index'
+	 * within the current max heap structure while maintaining the heap property
+	 * 
+	 * @param index
+	 *            index of the element to have its priority increased
+	 * @param newPriority
+	 *            value to change element's priority to
+	 */	
 	private void increaseKey(int index, int newPriority) {
 
 		if(index >= currentSize || index < 0) { return; }
@@ -323,6 +350,15 @@ public class PriorityHeap {
 		}
 	}
 
+	/**
+	 * Decreases the priority of the existing Proc object at location 'index'
+	 * within the current max heap structure and maintains the heap property
+	 * 
+	 * @param index
+	 *            index of the element to have its priority decreased
+	 * @param newPriority
+	 *            value to change element's priority to
+	 */
 	private void decreaseKey(int index, int newPriority) {
 		if (index >= currentSize || index < 0) { return; }
 		// Error handling; Should not happen if called from the change weight
@@ -336,17 +372,13 @@ public class PriorityHeap {
 		currentHeap[index].setPriority(newPriority);
 		siftdown(index);
 	}
-	
-	/**
-	 * 
-	 * @param index index of the desired Node
-	 * @return Node at index given
-	 */
-	public Proc getProc(int index)
-	{
-		return currentHeap[index];
-	}
 
+	/**
+	 * Generates a String representation of the current heap structure
+	 * and writes the result to the console
+	 * 
+	 * @return String representation of the current max-heap structure
+	 */
 	public String toString() {
 		StringBuilder heapString = new StringBuilder();
 		// iterate through each element in the current heap
