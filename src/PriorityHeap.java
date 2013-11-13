@@ -389,5 +389,16 @@ public class PriorityHeap {
 		return heapString.length() >= 1 ? heapString.substring(0,
 				heapString.length() - 1) : "";
 	}
+	
+	/**
+	 * Returns the node object at the given position
+	 * in the array-based heap implementation.
+	 * @param index index of desired node
+	 * @return node at given index
+	 */
+	public Proc getProc(int index)
+	{
+		return currentHeap[index];
+	}
 
 }
