@@ -1,4 +1,3 @@
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -19,21 +18,20 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
 /**
- * This class visually displays a priority
- * queue in a graph format, and allows user
- * interaction to enqueue, dequeue, and change
- * the weight of elements
+ * This class visually displays a priority queue in a graph format, and allows
+ * user interaction to enqueue, dequeue, and change the weight of elements
  * 
  * @author Austin Sorrells
- *
+ * 
  */
 public class VisualHeap extends JFrame {
 	// Offset is used in creating unique ids for nodes
-	final int offset = 100; 
+	final int offset = 100;
 	private static final long serialVersionUID = -2707712944901661771L;
 
 	/**
 	 * Constructor that draws a graph based upon a heap
+	 * 
 	 * @param heap
 	 */
 	public VisualHeap(PriorityHeap heap) {
@@ -82,11 +80,12 @@ public class VisualHeap extends JFrame {
 				if (leftChildIndex < currentLength) {
 					Proc leftChild = heap.getProc(leftChildIndex);
 					priority = leftChild.getPriority();
-					
-					// Sets the left vertex up, creates a unique ID using the index of the child
-					Object leftV = graph.insertVertex(graph.getDefaultParent(), 
-							Integer.toString(leftChildIndex + offset), 
-							"ID: " + leftChild.getProcID() + "\nPriority: "
+
+					// Sets the left vertex up, creates a unique ID using the
+					// index of the child
+					Object leftV = graph.insertVertex(graph.getDefaultParent(),
+							Integer.toString(leftChildIndex + offset), "ID: "
+									+ leftChild.getProcID() + "\nPriority: "
 									+ priority, // Prints inside node
 							0, 0, nodeWidth, nodeHeight); // Dimensions
 					graph.insertEdge(parent, "edge" + Integer.toString(n),
@@ -110,7 +109,7 @@ public class VisualHeap extends JFrame {
 				}
 
 			}
-			
+
 			// Creates a hierarchical structure and auto-formats the nodes
 			mxHierarchicalLayout hl = new mxHierarchicalLayout(graph);
 			hl.run(graph.getDefaultParent());
@@ -127,12 +126,14 @@ public class VisualHeap extends JFrame {
 												// not exist
 			firstNode.setGeometry(new mxGeometry());
 
-
 		JLabel priorityLabel = new JLabel("Priority");
-		priorityLabel.setBounds((int) (50 + firstNode.getGeometry().getX() + firstNode.getGeometry().getWidth()),0, 50, 15);
+		priorityLabel.setBounds(
+				(int) (50 + firstNode.getGeometry().getX() + firstNode
+						.getGeometry().getWidth()), 0, 50, 15);
 		JLabel IDLabel = new JLabel("ID");
 		IDLabel.setBounds(priorityLabel.getX(), IDLabel.getY() + 50, 25, 15);
-		JFormattedTextField priorityTextField = addTextField(priorityLabel.getX());
+		JFormattedTextField priorityTextField = addTextField(priorityLabel
+				.getX());
 		JFormattedTextField IDTextField = addIDTextBox(IDLabel.getX());
 		IDTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		JButton button = enqueueButton(heap, currentLength,
@@ -170,8 +171,8 @@ public class VisualHeap extends JFrame {
 	}
 
 	/**
-	 * Button that when pressed, enqueues a new element in the heap
-	 * with the priority value supplied in the priority text box
+	 * Button that when pressed, enqueues a new element in the heap with the
+	 * priority value supplied in the priority text box
 	 * 
 	 * @param heap
 	 *            Priority heap to be modified by enqueue
@@ -180,7 +181,7 @@ public class VisualHeap extends JFrame {
 	 * @param textFieldX
 	 *            The x coordinate of the text box
 	 * @param iDTextField
-	 * 			Text field to contain integer value for priority
+	 *            Text field to contain integer value for priority
 	 * @return
 	 */
 	public JButton enqueueButton(final PriorityHeap heap,
@@ -195,44 +196,50 @@ public class VisualHeap extends JFrame {
 		enqButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				// if the heap is at maximum capacity
-				if(heap.heapsize() >= heap.getMaxSize())
-				{
-					JOptionPane.showMessageDialog(null, "Cannot enqueue any more elements.");
+				if (heap.heapsize() >= heap.getMaxSize()) {
+					JOptionPane.showMessageDialog(null,
+							"Cannot enqueue any more elements.");
 					return;
 				}
 
 				// Check if user has entered priority and ID
-				if(textField.getValue() == null || iDTextField.getValue() == null)
-				{
-					JOptionPane.showMessageDialog(null, "Must enter a priority and ID.");
+				if (textField.getValue() == null
+						|| iDTextField.getValue() == null) {
+					JOptionPane.showMessageDialog(null,
+							"Must enter a priority and ID.");
 					return;
 				}
-				
+
 				// Parse the text fields to integer
 				// Text formatter ensures there will be numbers only
-				int priority = Integer.parseInt(textField.getValue().toString());
+				int priority = Integer
+						.parseInt(textField.getValue().toString());
 				int id = Integer.parseInt(iDTextField.getValue().toString());
 
-				if(id >= heap.getMaxSize() || id < 0)
-				{
-					JOptionPane.showMessageDialog(null, "ID must be between 0 and " + ( heap.getMaxSize() -1 ) + "." );
+				// iF the user tries to enter an ID outside of the bounds
+				if (id >= heap.getMaxSize() || id < 0) {
+					JOptionPane.showMessageDialog(null,
+							"ID must be between 0 and "
+									+ (heap.getMaxSize() - 1) + ".");
+					return;
 				}
-				
+
 				heap.enqueue(priority, id);
 				dispose(); // close the current window
 				draw(heap); // open a new window with the
-												// new heap
+							// new heap
 			}
 		});
 		return enqButton;
 	}
 
 	/**
-	 * Button that, when pressed, dequeues the top-most element
-	 * from the heap
+	 * Button that, when pressed, dequeues the top-most element from the heap
 	 * 
-	 * @param heap heap to perform dequeue on
-	 * @param enqueueTextFieldX x coordinate of the enqueue text field
+	 * @param heap
+	 *            heap to perform dequeue on
+	 * @param enqueueTextFieldX
+	 *            x coordinate of the enqueue text field
 	 * @return
 	 */
 	public JButton dequeueButton(final PriorityHeap heap, int enqueueTextFieldX) {
@@ -243,29 +250,36 @@ public class VisualHeap extends JFrame {
 		// Create a listener for button click
 		deqButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if(heap.heapsize() == 0)
-				{
-					JOptionPane.showMessageDialog(null, "Cannot dequeue any more nodes");
+
+				// if the heap is empty
+				if (heap.heapsize() == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Cannot dequeue any more nodes");
 					return;
 				}
 				int deqID = heap.dequeue(); // get ID from dequeued element
-				JOptionPane.showMessageDialog(null, "Dequeued element with ID: " + deqID);
+				JOptionPane.showMessageDialog(null,
+						"Dequeued element with ID: " + deqID);
 				dispose(); // close the current window
 				draw(heap); // open a new window with the
-												// new heap
+							// new heap
 			}
 		});
 		return deqButton;
 	}
 
 	/**
-	 * This button allows a user to change the priority of the selected node
-	 * in the graph to the priority in the priority text box.
+	 * This button allows a user to change the priority of the selected node in
+	 * the graph to the priority in the priority text box.
 	 * 
-	 * @param heap heap to perform change weight operation on
-	 * @param enqueueButtonX X coordinate of the enqueue button
-	 * @param priorityText text box that will contain the priority to use
-	 * @param graph graph that is currently in use, to get selected node
+	 * @param heap
+	 *            heap to perform change weight operation on
+	 * @param enqueueButtonX
+	 *            X coordinate of the enqueue button
+	 * @param priorityText
+	 *            text box that will contain the priority to use
+	 * @param graph
+	 *            graph that is currently in use, to get selected node
 	 * @return
 	 */
 	public JButton changeWeightButton(final PriorityHeap heap,
@@ -279,24 +293,25 @@ public class VisualHeap extends JFrame {
 		chngWeightButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				mxCell selectedCell = (mxCell) graph.getSelectionCell();
-				
+
 				// if the user has not selected a cell
 				if (selectedCell == null) {
 					JOptionPane.showMessageDialog(null,
 							"Please Select a Node First");
 					return;
 				} else if (priorityText.getValue() == null) {
-
+					JOptionPane.showMessageDialog(null,
+							"Must enter a number in the priority box.");
 				} else {
 					// IDs are unique (index + offset)
-					int index = Integer.parseInt(selectedCell.getId()); 
+					int index = Integer.parseInt(selectedCell.getId());
 					// remove this offset to get the correct index
-					index = index - offset; 
+					index = index - offset;
 					heap.changeWeight(index, Integer.parseInt(priorityText
 							.getValue().toString()));
 					dispose(); // close the current window
 					draw(heap); // open a new window with the
-													// new heap
+								// new heap
 				}
 
 			}
@@ -306,11 +321,14 @@ public class VisualHeap extends JFrame {
 
 	/**
 	 * Creates a textField for user to enter Priority
-	 * @param labelX the x coordinate of the corresponding label
+	 * 
+	 * @param labelX
+	 *            the x coordinate of the corresponding label
 	 * @return
 	 */
 	public JFormattedTextField addTextField(int labelX) {
-		JFormattedTextField textBox = new JFormattedTextField(createNumberFormat());
+		JFormattedTextField textBox = new JFormattedTextField(
+				createNumberFormat());
 		textBox.setSize(80, 20);
 		textBox.setLocation(labelX + 50, 0);
 		return textBox;
@@ -318,36 +336,63 @@ public class VisualHeap extends JFrame {
 
 	/**
 	 * Creates a textField for the user to enter a node ID
-	 * @param labelX the x coordinate of the label 
+	 * 
+	 * @param labelX
+	 *            the x coordinate of the label
 	 * @return
 	 */
 	public JFormattedTextField addIDTextBox(int labelX) {
-		JFormattedTextField textBox = new JFormattedTextField(createNumberFormat());
+		JFormattedTextField textBox = new JFormattedTextField(
+				createNumberFormat());
 		textBox.setSize(80, 20);
 		textBox.setLocation(labelX + 50, 50);
 		return textBox;
 	}
 
 	/**
-	 * initializes the window on the user's screen and calls
-	 * the constructor to draw the graph
+	 * initializes the window on the user's screen and calls the constructor to
+	 * draw the graph
 	 * 
-	 * @param heap heap to draw as a graph
+	 * @param heap
+	 *            heap to draw as a graph
 	 */
 	public static void draw(PriorityHeap heap) {
 		VisualHeap frame = new VisualHeap(heap);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(1000, 500);
 		frame.setVisible(true);
-		
+
 	}
-	
+
+	public static void initialize() {
+		// Prompt user to enter the maximum size
+		String input = JOptionPane
+				.showInputDialog("Enter the maximum heap size : ");
+
+		if (input == null) {
+			PriorityHeap heap = new PriorityHeap();
+			JOptionPane.showMessageDialog(null,
+					"Maximum size set to default size of 50");
+			draw(heap);
+		}
+
+		else {
+			try {
+				int maxSize = Integer.parseInt(input);
+				PriorityHeap heap = new PriorityHeap(new Proc[0], maxSize);
+				draw(heap);
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Must enter a number.");
+				initialize();
+			}
+		}
+	}
+
 	/**
 	 * 
 	 * @return Format that allows integer values only
 	 */
-	private NumberFormatter createNumberFormat()
-	{
+	private NumberFormatter createNumberFormat() {
 		NumberFormat format = NumberFormat.getInstance();
 		NumberFormatter numFormat = new NumberFormatter(format);
 		numFormat.setValueClass(Integer.class);

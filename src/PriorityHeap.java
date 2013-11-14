@@ -14,11 +14,8 @@ public class PriorityHeap {
 	private int currentSize; // number of elements currently in heap
 
 	public static void main(String[] args) {
-		Proc[] procs = { new Proc(1, 0) };
-		PriorityHeap heap = new PriorityHeap(procs, 3);
-		heap.buildheap();
-
-		VisualHeap.draw(heap);
+		// Runs the GUI
+		VisualHeap.initialize();
 	}
 
 	/**
