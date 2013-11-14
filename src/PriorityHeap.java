@@ -10,12 +10,12 @@ public class PriorityHeap {
 
 	private Proc[] currentHeap; // heap structure
 	private Proc[] procList; // list of Proc objects sorted by ID
-	private int heapsize; // maximum array size
+	private int size; // maximum array size
 	private int currentSize; // number of elements currently in heap
 
 	public static void main(String[] args) {
 		Proc[] procs = { new Proc(1, 0) };
-		PriorityHeap heap = new PriorityHeap(procs, 1);
+		PriorityHeap heap = new PriorityHeap(procs, 3);
 		heap.buildheap();
 
 		VisualHeap.draw(heap);
@@ -25,11 +25,11 @@ public class PriorityHeap {
 	 * Creates a new priority queue with default values. Default heapsize = 50.
 	 */
 	public PriorityHeap() {
-		heapsize = 50;
+		size = 50;
 		currentSize = 0;
-		currentHeap = new Proc[heapsize];
-		procList = new Proc[heapsize];
-		for (int i = 0; i < heapsize; i++)
+		currentHeap = new Proc[size];
+		procList = new Proc[size];
+		for (int i = 0; i < size; i++)
 			// Initialize the list of Proc objects to NULL
 			procList[i] = null;
 	}
@@ -50,11 +50,11 @@ public class PriorityHeap {
 			return;
 		}
 
-		heapsize = maxSize;
+		size = maxSize;
 		currentSize = ls.length;
-		currentHeap = new Proc[heapsize];
-		procList = new Proc[heapsize];
-		for (int i = 0; i < heapsize; i++)
+		currentHeap = new Proc[size];
+		procList = new Proc[size];
+		for (int i = 0; i < size; i++)
 			procList[i] = null;
 
 		// Copies the values from the passed array to the array
@@ -71,7 +71,7 @@ public class PriorityHeap {
 				System.err
 						.println("A process with that ID has already been created");
 				return;
-			} else if (p.getProcID() >= heapsize) {
+			} else if (p.getProcID() >= size) {
 				System.err.println("The ID of this process is too large");
 				return;
 			} 
@@ -210,7 +210,7 @@ public class PriorityHeap {
 	 * @return 
 	 */
 	public void insert(Proc newProc) {
-		if (newProc.getProcID() >= heapsize) {
+		if (newProc.getProcID() >= size) {
 			return;
 		} // Valid IDs are from 0 to heapsize - 1
 
@@ -303,7 +303,7 @@ public class PriorityHeap {
 	 */
 	public void enqueue(int priority, int id) {
 		// Error checking; Check if there is any room to insert a new object.
-		if (currentSize >= heapsize) {
+		if (currentSize >= size) {
 			System.err.println("Cannot enqueue any more nodes, already at maximum capacity!");
 			return;
 		}
@@ -430,6 +430,17 @@ public class PriorityHeap {
 			return currentHeap[index];
 		else
 			return null;
+	}
+	
+	
+	/**
+	 * Getter method for the maximum
+	 * heap size.
+	 * @return maximum size of the heap
+	 */
+	public int getMaxSize()
+	{
+		return this.size;
 	}
 
 }

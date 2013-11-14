@@ -1,3 +1,4 @@
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -5,7 +6,9 @@ import java.text.NumberFormat;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import javax.swing.text.NumberFormatter;
 
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
@@ -124,18 +127,25 @@ public class VisualHeap extends JFrame {
 												// not exist
 			firstNode.setGeometry(new mxGeometry());
 
-		JFormattedTextField priorityTextField = addTextField((int) firstNode
-				.getGeometry().getX());
-		JFormattedTextField IDTextField = addIDTextBox((int) firstNode
-				.getGeometry().getX());
+
+		JLabel priorityLabel = new JLabel("Priority");
+		priorityLabel.setBounds((int) (50 + firstNode.getGeometry().getX() + firstNode.getGeometry().getWidth()),0, 50, 15);
+		JLabel IDLabel = new JLabel("ID");
+		IDLabel.setBounds(priorityLabel.getX(), IDLabel.getY() + 50, 50, 15);
+		JFormattedTextField priorityTextField = addTextField(priorityLabel.getX());
+		JFormattedTextField IDTextField = addIDTextBox(IDLabel.getX());
+		IDTextField.setHorizontalAlignment(SwingConstants.RIGHT);
 		JButton button = enqueueButton(heap, currentLength,
 				priorityTextField.getX(), priorityTextField, IDTextField);
 		JButton deqbutton = dequeueButton(heap, button.getX());
 		JButton chngWeightButton = changeWeightButton(heap, button.getX(),
 				priorityTextField, graph);
+
 		// Add items to visible pane
 		getContentPane().add(priorityTextField);
 		getContentPane().add(IDTextField);
+		getContentPane().add(IDLabel);
+		getContentPane().add(priorityLabel);
 		getContentPane().add(button);
 		getContentPane().add(deqbutton);
 		getContentPane().add(chngWeightButton);
@@ -179,13 +189,36 @@ public class VisualHeap extends JFrame {
 			final JFormattedTextField iDTextField) {
 		JButton enqButton = new JButton("Enqueue");
 		enqButton.setSize(100, 30);
-		enqButton.setLocation(textFieldX + 150, 0);
+		enqButton.setLocation(textFieldX + 100, 0);
 
 		// Create a listener for button click
 		enqButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				heap.enqueue(Integer.parseInt(textField.getValue().toString()),
-						Integer.parseInt(iDTextField.getValue().toString()));
+				// if the heap is at maximum capacity
+				if(heap.heapsize() >= heap.getMaxSize())
+				{
+					JOptionPane.showMessageDialog(null, "Cannot enqueue any more elements.");
+					return;
+				}
+
+				// Check if user has entered priority and ID
+				if(textField.getValue() == null || iDTextField.getValue() == null)
+				{
+					JOptionPane.showMessageDialog(null, "Must enter a priority and ID.");
+					return;
+				}
+				
+				// Parse the text fields to integer
+				// Text formatter ensures there will be numbers only
+				int priority = Integer.parseInt(textField.getValue().toString());
+				int id = Integer.parseInt(iDTextField.getValue().toString());
+
+				if(id >= heap.getMaxSize() || id < 0)
+				{
+					JOptionPane.showMessageDialog(null, "ID must be between 0 and " + ( heap.getMaxSize() -1 ) + "." );
+				}
+				
+				heap.enqueue(priority, id);
 				dispose(); // close the current window
 				draw(heap); // open a new window with the
 												// new heap
@@ -215,7 +248,8 @@ public class VisualHeap extends JFrame {
 					JOptionPane.showMessageDialog(null, "Cannot dequeue any more nodes");
 					return;
 				}
-				heap.dequeue();
+				int deqID = heap.dequeue(); // get ID from dequeued element
+				JOptionPane.showMessageDialog(null, "Dequeued element with ID: " + deqID);
 				dispose(); // close the current window
 				draw(heap); // open a new window with the
 												// new heap
@@ -272,25 +306,25 @@ public class VisualHeap extends JFrame {
 
 	/**
 	 * Creates a textField for user to enter Priority
-	 * @param rootX the x coordinate of the root element in the graph
+	 * @param labelX the x coordinate of the corresponding label
 	 * @return
 	 */
-	public JFormattedTextField addTextField(int rootX) {
+	public JFormattedTextField addTextField(int labelX) {
 		JFormattedTextField textBox = new JFormattedTextField(createNumberFormat());
-		textBox.setSize(100, 30);
-		textBox.setLocation(rootX + 150, 0);
+		textBox.setSize(80, 20);
+		textBox.setLocation(labelX + 50, 0);
 		return textBox;
 	}
 
 	/**
 	 * Creates a textField for the user to enter a node ID
-	 * @param rootX the x coordinate of the root element in the graph
+	 * @param labelX the x coordinate of the label 
 	 * @return
 	 */
-	public JFormattedTextField addIDTextBox(int rootX) {
+	public JFormattedTextField addIDTextBox(int labelX) {
 		JFormattedTextField textBox = new JFormattedTextField(createNumberFormat());
-		textBox.setSize(100, 30);
-		textBox.setLocation(rootX + 150, 50);
+		textBox.setSize(80, 20);
+		textBox.setLocation(labelX + 50, 50);
 		return textBox;
 	}
 
