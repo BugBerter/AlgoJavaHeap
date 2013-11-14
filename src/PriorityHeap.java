@@ -200,7 +200,7 @@ public class PriorityHeap {
 	 *         the root node
 	 */
 	public int parent(int child) {
-		return (((int) Math.floor((child - 1) / 2)) >= 0) ? ((int) Math
+		return (child > 0) ? ((int) Math
 				.floor((child - 1) / 2)) : -1;
 	}
 
