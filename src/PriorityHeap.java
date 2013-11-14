@@ -91,6 +91,8 @@ public class PriorityHeap {
 	 */
 	private void siftdown(int parent) {
 		int max;
+		
+		if (parent >= currentSize) { return; } //This occurs if we remove the last element
 
 		if (leftChild(parent) < currentSize
 				&& currentHeap[leftChild(parent)].getPriority() > currentHeap[parent]
@@ -206,14 +208,14 @@ public class PriorityHeap {
 	 * @param newProc
 	 * @return 
 	 */
-	public void insert(Proc newProc) {
+	public boolean insert(Proc newProc) {
 		if (newProc.getProcID() >= size) {
-			return;
+			return false;
 		} // Valid IDs are from 0 to heapsize - 1
 
 		if (procList[newProc.getProcID()] != null) {
 			System.err.println("A process with that ID has already been created.");
-			return;
+			return false;
 		}
 
 		procList[newProc.getProcID()] = newProc; // Add the Proc to the ordered
@@ -222,6 +224,7 @@ public class PriorityHeap {
 		// To insert, essentially sift the element up based on its priority
 		currentHeap[currentSize++] = newProc;
 		increaseKey(currentSize - 1, newProc.getPriority());
+		return true;
 	}
 
 	/**
