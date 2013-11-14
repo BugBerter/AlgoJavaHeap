@@ -25,33 +25,108 @@ public class PriorityHeapTests extends TestCase {
 		assertEquals(temp2.getPriority(), 30);
 		assertEquals(temp2.getProcID(), 11);
 	}
-	
-	public void testSiftdown() {
-		initialize();
-	}
-	
+
 	public void testExtract() {
+		//Test on heap before it is sorted
 		initialize();
+		Proc temp = heap.removeMax();
+		assertEquals(temp.getPriority(), 10);
+		assertEquals(temp.getProcID(), 13);
+		assertEquals(heap.getProc(0).getProcID(), 11);
+		
+		temp = heap.remove(heap.heapsize() - 1);
+		assertEquals(temp.getPriority(), 8);
+		assertEquals(temp.getProcID(), 21);
+		
+		//Test on a sorted heap
+		initialize(); //reset the heap
+		heap.buildheap();
+		temp = heap.removeMax();
+		assertEquals(temp.getPriority(), 100);
+		assertEquals(temp.getProcID(), 9);
+		assertEquals(heap.getProc(0).getProcID(), 11);
+		
+		temp = heap.remove(heap.heapsize() - 1);
+		assertEquals(temp.getPriority(), 8);
+		assertEquals(temp.getProcID(), 21);
 	}
 	
 	public void testInsert() {
 		initialize();
+		
+		heap.buildheap();
+		
+		boolean didInsert = heap.insert(new Proc(Integer.MAX_VALUE, 40)); //Proc with an ID that is too large
+		assertFalse(didInsert); //Proc was not inserted
+		
+		didInsert = heap.insert(new Proc(Integer.MAX_VALUE, 10)); //Proc with ID that already exists
+		assertFalse(didInsert); //Proc was not inserted
+		
+		didInsert = heap.insert(new Proc(Integer.MAX_VALUE, 1)); //Add valid Proc to the heap
+		assertTrue(didInsert);
+		//Make sure the heap property was maintained correctly
+		assertEquals(heap.getProc(0).getPriority(), Integer.MAX_VALUE);
+		
 	}
 	
 	public void testWeightChange() {
 		initialize();
+		heap.buildheap();
+		int temp;
+		
+		//This test consists of four cases:
+		//1. Increase the weight of the root
+		//This will not change the heap
+		temp = heap.getProc(0).getProcID();
+		heap.changeWeight(0, 200);
+		assertEquals(heap.getProc(0).getProcID(), temp);
+			//Make sure the root did not change
+		
+		//2. Decrease the weight of a leaf
+		//This will not change the heap
+		temp = heap.getProc(heap.heapsize() - 1).getProcID();
+		heap.changeWeight(heap.heapsize() - 1, 0);
+		assertEquals(heap.getProc(heap.heapsize() - 1).getProcID(), temp);
+		
+		//3. Increase the weight of a leaf to the largest value
+		//This will make the leaf root and change the heap structure
+		temp = heap.getProc((heap.heapsize() / 2)).getProcID();
+		heap.changeWeight(heap.heapsize() / 2, Integer.MAX_VALUE);
+		assertEquals(heap.getProc(0).getProcID(), temp);
+		
+		//4. Decrease the weight of a parent to the smallest value
+		//This will make the parent a leaf node and change the heap
+		temp = heap.getProc((heap.heapsize() - 1) / 2).getProcID();
+		heap.changeWeight((heap.heapsize() - 1) / 2, Integer.MIN_VALUE);
+		assertNotSame(heap.getProc((heap.heapsize() - 1) / 2).getProcID(), temp);
+			//Makes sure the Proc is not in the same location as before
 	}
 	
 	public void testEnqueue() {
 		initialize();
+		heap.buildheap();
+		
+		heap.enqueue(200, 5); //Will become the new root
+		assertEquals(heap.getProc(0).getProcID(), 5);
+		
+		heap.enqueue(Integer.MIN_VALUE, 12); //Will become a leaf at index = heapsize() - 1
+		assertEquals(heap.getProc(heap.heapsize() - 1).getProcID(), 12);
+		
+		heap.enqueue(25, 1); //Insert a middle value.
+			//From by-hand calculations, will end up at index = 1
+		assertEquals(heap.getProc(1).getProcID(), 1);
 	}
 	
 	public void testDequeue() {
 		initialize();
-	}
-	
-	public void testSwap() {
-		initialize();
+		heap.buildheap();
+		int temp;
+		
+		//Will first dequeue Proc with ID = 9, priority = 100
+		temp = heap.dequeue(); //Returns the process ID
+		assertEquals(temp, 9);
+		//Will contain Proc with ID = 11, priority = 30 as new root
+		assertEquals(heap.getProc(0).getProcID(), 11);
 	}
 	
 	public void testHeapSize() {
@@ -89,13 +164,5 @@ public class PriorityHeapTests extends TestCase {
 		
 		assertEquals(heap.getProc(heap.heapsize() - 1).getPriority(), 20);
 		assertEquals(heap.getProc(heap.heapsize() - 1).getProcID(), 10);
-	}
-	
-	public void testIncreaseKey() {
-		initialize();
-	}
-	
-	public void testDecreaseKey() {
-		initialize();
 	}
 }
