@@ -4,18 +4,19 @@ public class PriorityHeapTests extends TestCase {
 	
 	private Proc[] procs;
 	private int heapSize;
+	private PriorityHeap heap;
 	
 	
 	private void initialize() {
 		Proc[] procList = { new Proc(10, 13), new Proc(5, 7), new Proc(20, 10), new Proc(100, 9), new Proc(8, 21), new Proc(30, 11) };
 		procs = procList;
 		heapSize = 25;
+		heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testInitialization() {
 		initialize();
 		
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 		Proc temp1 = heap.getProc(0);
 		assertEquals(temp1.getPriority(), 10);
 		assertEquals(temp1.getProcID(), 13);
@@ -27,42 +28,34 @@ public class PriorityHeapTests extends TestCase {
 	
 	public void testSiftdown() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testExtract() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testInsert() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testWeightChange() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testEnqueue() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testDequeue() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testSwap() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testHeapSize() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 		
 		assertEquals(heap.heapsize(), 6);
 		assertEquals(heap.getMaxSize(), 25);
@@ -70,7 +63,6 @@ public class PriorityHeapTests extends TestCase {
 	
 	public void testTree() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 		
 		assertFalse(heap.isLeaf(0)); //root
 		assertTrue(heap.isLeaf(heap.heapsize() - 1)); //last node
@@ -90,7 +82,6 @@ public class PriorityHeapTests extends TestCase {
 	
 	public void testBuildHeap() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 		heap.buildheap();
 
 		assertEquals(heap.getProc(0).getPriority(), 100);
@@ -102,11 +93,9 @@ public class PriorityHeapTests extends TestCase {
 	
 	public void testIncreaseKey() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 	
 	public void testDecreaseKey() {
 		initialize();
-		PriorityHeap heap = new PriorityHeap(procs, heapSize);
 	}
 }
