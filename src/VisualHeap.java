@@ -131,7 +131,7 @@ public class VisualHeap extends JFrame {
 		JLabel priorityLabel = new JLabel("Priority");
 		priorityLabel.setBounds((int) (50 + firstNode.getGeometry().getX() + firstNode.getGeometry().getWidth()),0, 50, 15);
 		JLabel IDLabel = new JLabel("ID");
-		IDLabel.setBounds(priorityLabel.getX(), IDLabel.getY() + 50, 50, 15);
+		IDLabel.setBounds(priorityLabel.getX(), IDLabel.getY() + 50, 25, 15);
 		JFormattedTextField priorityTextField = addTextField(priorityLabel.getX());
 		JFormattedTextField IDTextField = addIDTextBox(IDLabel.getX());
 		IDTextField.setHorizontalAlignment(SwingConstants.RIGHT);
