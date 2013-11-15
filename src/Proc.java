@@ -1,3 +1,9 @@
+/**
+ * Proc is a node object that is stored in a priority queue.
+ * It consists of a priority value, and an id value.
+ * @author Austin Sorrells, Jared Watkins
+ *
+ */
 public class Proc {
 
 	private int priority;
